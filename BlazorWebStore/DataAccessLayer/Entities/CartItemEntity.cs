@@ -7,11 +7,8 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Entities
 {
-    public class CartItemEntity
+    public class CartItemEntity : BaseEntity
     {
-        [Key]
-        public int Id { get; set; }
-
         [Required]
         public int UserId { get; set; }
 

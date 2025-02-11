@@ -8,20 +8,18 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Entities
 {
-    public class ProductEntity
+    public class ProductEntity : BaseEntity
     {
-        public int Id { get; set; }
-
         [Required]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty ;
 
         [Required]
         [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }
 
-        public byte[] ImageData { get; set; }
+        public byte[] ImageData { get; set; } = [];
 
         public virtual List<CartItemEntity> CartItems { get; set; } = new List<CartItemEntity>();
     }

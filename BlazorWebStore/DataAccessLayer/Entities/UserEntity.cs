@@ -9,16 +9,14 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Entities
 {
-    public class UserEntity
+    public class UserEntity : BaseEntity
     {
-        public int Id { get; set; }
-
         [Required]
         [EmailAddress]
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
         [Required]
-        public string PasswordHash { get; set; }
+        public string PasswordHash { get; set; } = string.Empty;
 
         [Required]
         public UserRole Role { get; set; }
