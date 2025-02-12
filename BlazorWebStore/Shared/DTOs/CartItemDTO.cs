@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Shared.DTOs
 {
-    public class CartItemDTO : BaseDTO
+    public class CartItemDTO
     {
         public int ProductId { get; set; }
         public string ProductName { get; set; }

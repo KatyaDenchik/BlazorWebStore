@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using BusinessLogicLayer.Mappings;
+using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace BlazorWebStore
 {
@@ -26,7 +28,7 @@ namespace BlazorWebStore
                 options.AddPolicy("AllowAll",
                     policy => policy.AllowAnyOrigin()
                                     .AllowAnyMethod()
-                                    .AllowAnyHeader()); 
+                                    .AllowAnyHeader());
             });
 
             var jwtSettings = builder.Configuration.GetSection("Jwt");
@@ -44,13 +46,40 @@ namespace BlazorWebStore
                         ValidateIssuer = true,
                         ValidateAudience = true,
                         ValidIssuer = jwtSettings["Issuer"],
-                        ValidAudience = jwtSettings["Audience"]
+                        ValidAudience = jwtSettings["Audience"],
+                        ClockSkew = TimeSpan.Zero
                     };
                 });
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "¬ведите JWT-токен в формате 'Bearer {token}'"
+                });
+
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+               {
+                {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+             }
+               });
+            });
 
             builder.ConfigureDBA();
 
@@ -63,6 +92,10 @@ namespace BlazorWebStore
             builder.Services.AddScoped<ProductService>();
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<CartService>();
+
+            builder.Services.AddScoped<JwtService>();
+
+            builder.Services.AddScoped<PasswordService>();
 
             var app = builder.Build();
 

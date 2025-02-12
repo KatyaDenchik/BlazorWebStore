@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace Shared.DTOs
 {
-    public class UserDTO : BaseDTO
+    public class UserDTO
     {
+        public string Password { get; set; }
         public string Email { get; set; }
         public UserRole Role { get; set; }
     }
