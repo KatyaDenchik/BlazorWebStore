@@ -1,0 +1,60 @@
+﻿@page "/products"
+@using Shared.Models
+@using Admin.Services
+@inject NavigationManager Navigation
+@inject ProductService ProductService
+
+<h3>Products</h3>
+<table>
+    <thead>
+        <tr><th>Name</th><th>Price</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var product in products)
+        {
+            <tr>
+                <td>@product.Name</td>
+                <td>@product.Description</td>
+                <td>@product.Price</td>
+                <td>
+                    <button @onclick="() => EditProduct(product.Id)">Edit</button>
+                    <button @onclick="() => DeleteProduct(product.Id)">Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<button @onclick="AddProduct">Add New Product</button>
+
+@code {
+    private List<ProductViewModel> products = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        products = await ProductService.GetAllProductAsync();
+    }
+
+    private void AddProduct()
+    {
+        Navigation.NavigateTo("/add-edit-product");
+    }
+
+    private void EditProduct(int id)
+    {
+        Navigation.NavigateTo($"/add-edit-product/{id}");
+    }
+
+    private async Task DeleteProduct(int id)
+    {
+        bool isDeleted = await ProductService.DeleteProductAsync(id);
+        if (isDeleted)
+        {
+            products = await ProductService.GetAllProductAsync();
+        }
+        else
+        {
+            // Можно добавить логику обработки ошибки
+            // Например, показать сообщение пользователю
+        }
+    }
+}

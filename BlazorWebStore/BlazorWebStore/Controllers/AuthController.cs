@@ -22,6 +22,21 @@ namespace API.Controllers
             this.jwtService = jwtService;
         }
 
+        [HttpPost("loginAsAdmin")]
+        public async Task<IActionResult> LoginAsAdmin([FromBody] UserLoginDTO loginDto)
+        {
+            var user = await userService.AuthenticateUserAsync(loginDto.Email, loginDto.Password);
+
+            if (user == null)
+                return Unauthorized(new { Message = "Невірний email или пароль" });
+
+            if (user.Role == Shared.Enums.UserRole.Admin)
+                return Unauthorized(new { Message = "Юзер не є адміном" });
+
+            var token = jwtService.GenerateToken(user);
+            return Ok(new { Token = token });
+        }
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginDTO loginDto)
         {
@@ -30,8 +45,7 @@ namespace API.Controllers
             if (user == null)
                 return Unauthorized(new { Message = "Невірний email или пароль" });
 
-            var token = jwtService.GenerateToken(user);
-            return Ok(new { Token = token });
+            return Ok(user);
         }
     }
 }

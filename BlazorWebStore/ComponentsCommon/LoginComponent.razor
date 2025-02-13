@@ -1,0 +1,38 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+@using Shared.DTOs
+@using Shared.Interfaces
+@using Microsoft.JSInterop
+@inject NavigationManager Navigation
+@inject IAuthService authService
+@inject IJSRuntime JSRuntime
+
+<EditForm Model="request" OnValidSubmit="HandleLogin" method="post">
+    <DataAnnotationsValidator />
+    <div>
+        <label>Email:</label>
+        <InputText @bind-Value="request.Email" />
+    </div>
+    <div>
+        <label>Password:</label>
+        <InputText @bind-Value="request.Password" type="password" />
+    </div>
+    <button type="submit">Login</button>
+</EditForm>
+@code {
+    [Parameter]
+    public string PathAfterLogin { get; set; }
+    private UserLoginDTO request = new();
+
+    private async Task HandleLogin() 
+    {
+        var result = await authService.LoginAsync(request);
+        if (result)
+        {
+            Navigation.NavigateTo(PathAfterLogin);
+        }
+        else
+        {
+            await JSRuntime.InvokeVoidAsync("alert", "Login failed");
+        }
+    }
+}

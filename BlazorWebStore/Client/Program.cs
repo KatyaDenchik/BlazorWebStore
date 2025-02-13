@@ -1,6 +1,10 @@
 using Client.Data;
+using Client.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.JSInterop;
+using Shared.Interfaces;
 
 namespace Client
 {
@@ -13,8 +17,27 @@ namespace Client
             // Add services to the container.
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
-            builder.Services.AddSingleton<WeatherForecastService>();
+            builder.Services.AddHttpContextAccessor();
 
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/login";
+
+                    options.Cookie.Name = "myAppAuthCookie";
+                    options.Cookie.HttpOnly = true;
+                });
+
+            builder.Services.AddScoped<IAuthService, CookiesAuthServices>();
+            builder.Services.AddScoped<CookiesAuthServices>();
+            builder.Services.AddScoped(sp =>
+            {
+                return new HttpClient
+                {
+                    BaseAddress = new Uri("https://localhost:7110"),
+                    DefaultRequestHeaders = { { "Accept", "application/json" } }
+                };
+            });
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -30,6 +53,9 @@ namespace Client
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.MapBlazorHub();
             app.MapFallbackToPage("/_Host");

@@ -27,6 +27,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Admin", "Admin\Admin.csproj
 	ProjectSection(ProjectDependencies) = postProject
 		{58B3DF6E-FCEF-4685-BE8E-B602AAE41E70} = {58B3DF6E-FCEF-4685-BE8E-B602AAE41E70}
 		{5E5DB6F5-E9EB-4574-84B7-D5149B63A082} = {5E5DB6F5-E9EB-4574-84B7-D5149B63A082}
+		{94A9E92F-2F8A-44C1-99E9-63923EF55579} = {94A9E92F-2F8A-44C1-99E9-63923EF55579}
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client", "Client\Client.csproj", "{8C4D1234-8862-453A-905F-57E9C2C61103}"
@@ -35,7 +36,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client", "Client\Client.csp
 		{5E5DB6F5-E9EB-4574-84B7-D5149B63A082} = {5E5DB6F5-E9EB-4574-84B7-D5149B63A082}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComponentsCommon", "ComponentsCommon\ComponentsCommon.csproj", "{5E5DB6F5-E9EB-4574-84B7-D5149B63A082}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentsCommon", "ComponentsCommon\ComponentsCommon.csproj", "{5E5DB6F5-E9EB-4574-84B7-D5149B63A082}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

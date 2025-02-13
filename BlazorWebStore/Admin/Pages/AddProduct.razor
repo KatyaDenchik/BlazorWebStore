@@ -1,0 +1,106 @@
+﻿@page "/add-edit-product/{id:int?}"
+
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.JSInterop
+@using Shared.Models
+@using Admin.Services
+
+@inject NavigationManager Navigation
+@inject ProductService ProductService
+@inject IJSRuntime JSRuntime
+
+<EditForm Model="@productModel" OnValidSubmit="@HandleSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label for="Name">Name:</label>
+        <InputText id="Name" @bind-Value="productModel.Name" />
+    </div>
+
+    <div>
+        <label for="Description">Description:</label>
+        <InputTextArea id="Description" @bind-Value="productModel.Description" />
+    </div>
+
+    <div>
+        <label for="Price">Price:</label>
+        <InputNumber id="Price" @bind-Value="productModel.Price" />
+    </div>
+
+    <div>
+        <label>Image:</label>
+        <InputFile id="hiddenFileInput"
+                   style="display:none;"
+                   OnChange="@HandleFileChange" />
+
+        <button type="button" @onclick="TriggerFileDialog">Select Image</button>
+
+        @if (productModel.ImageData != null)
+        {
+            <img src="@ConvertToBase64(productModel.ImageData)"
+                 alt="Image Preview"
+                 style="max-width:150px;" />
+        }
+    </div>
+
+    <button type="submit">Add Product</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+
+    private ProductViewModel productModel = new();
+    private const int FileSize = 4 * 1024 * 1024;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id.HasValue && Id.Value > 0)
+        {
+            productModel = await ProductService.GetProductByIdAsync(Id.Value);
+        }
+    }
+
+    private async Task HandleSubmit()
+    {
+        if (productModel.ImageData == null || productModel.ImageData.Length == 0)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", "No image selected. Please upload the file.");
+            return;
+        }
+
+        await ProductService.CreateAsync(productModel);
+
+        Navigation.NavigateTo("/products");
+    }
+
+    private async Task HandleFileChange(InputFileChangeEventArgs e)
+    {
+        if (e.File is null)
+            return;
+
+        if (e.File.Size > FileSize)
+        {
+            Console.WriteLine("File size exceeds 4MB");
+            return;
+        }
+
+        using var stream = e.File.OpenReadStream(maxAllowedSize: FileSize);
+        using var memoryStream = new MemoryStream();
+        await stream.CopyToAsync(memoryStream);
+        productModel.ImageData = memoryStream.ToArray();
+    }
+
+    private async Task TriggerFileDialog()
+    {
+        await JSRuntime.InvokeVoidAsync("openFileDialog", "hiddenFileInput");
+    }
+
+    private string ConvertToBase64(byte[]? bytes)
+    {
+        if (bytes == null || bytes.Length == 0) return string.Empty;
+        var base64String = Convert.ToBase64String(bytes);
+        return $"data:image/png;base64,{base64String}";
+    }
+}
