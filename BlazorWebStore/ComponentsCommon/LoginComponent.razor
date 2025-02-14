@@ -6,18 +6,17 @@
 @inject IAuthService authService
 @inject IJSRuntime JSRuntime
 
+<div class="login-page">
 <EditForm Model="request" OnValidSubmit="HandleLogin" method="post">
     <DataAnnotationsValidator />
-    <div>
-        <label>Email:</label>
-        <InputText @bind-Value="request.Email" />
-    </div>
-    <div>
-        <label>Password:</label>
-        <InputText @bind-Value="request.Password" type="password" />
-    </div>
-    <button type="submit">Login</button>
+        <CustomInput Label="Email:" @bind-Value="request.Email" />
+
+        <CustomInput Label="Password:" Type="password" @bind-Value="request.Password" />
+
+        <CustomButton Type="submit">Login</CustomButton>
 </EditForm>
+</div>
+
 @code {
     [Parameter]
     public string PathAfterLogin { get; set; }

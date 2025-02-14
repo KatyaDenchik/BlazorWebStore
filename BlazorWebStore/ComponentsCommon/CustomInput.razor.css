@@ -1,0 +1,21 @@
+﻿.custom-input {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+}
+
+    .custom-input label {
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+.input-field {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+    .input-field:focus {
+        border-color: #007bff;
+        outline: none;
+    }

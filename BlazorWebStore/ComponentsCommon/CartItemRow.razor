@@ -1,0 +1,43 @@
+﻿@using System.Globalization
+@using global::Shared.DTOs
+@using global::Shared.Models
+
+<tr class="cart-item-row">
+    <td>@Item.ProductName</td>
+    <td>@Item.Price.ToString("C", new CultureInfo("uk-UA"))</td>
+    <td>
+        <input type="number" min="1" value="@Item.Quantity" @onchange="HandleQuantityChange" class="quantity-input" />
+    </td>
+    <td>@((Item.Price * Item.Quantity).ToString("C", new CultureInfo("uk-UA")))</td>
+    <td>
+        <button class="remove-btn" @onclick="() => OnRemoveItem.InvokeAsync(Item.Id)">Видалити</button>
+    </td>
+</tr>
+
+@code {
+    [Parameter] public CartItemDTO Item { get; set; }
+    [Parameter] public EventCallback<CartItemDTO> OnQuantityChanged { get; set; }
+    [Parameter] public EventCallback<int> OnRemoveItem { get; set; }
+
+    private async Task HandleQuantityChange(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value.ToString(), out int newQuantity))
+        {
+            if (newQuantity < 1)
+            {
+                newQuantity = 1;
+            }
+            if (Item.Quantity != newQuantity)
+            {
+                Item.Quantity = newQuantity;
+                await OnQuantityChanged.InvokeAsync(Item);
+            }
+        }
+        else
+        {
+            Item.Quantity = 1;
+            await OnQuantityChanged.InvokeAsync(Item);
+        }
+    }
+}
+

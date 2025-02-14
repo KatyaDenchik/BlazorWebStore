@@ -1,4 +1,5 @@
 ﻿using BusinessLogicLayer.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.DTOs;
 using System;
@@ -20,12 +21,14 @@ namespace API.Controllers
             this.cartService = cartService;
         }
 
+        [Authorize]
         [HttpGet("{userId}")]
         public async Task<IEnumerable<CartItemDTO>> GetCartItems(int userId)
         {
             return await cartService.GetCartItemsAsync(userId);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddToCart([FromBody] CartItemDTO cartItem)
         {
@@ -33,6 +36,7 @@ namespace API.Controllers
             return Ok(new { Message = "Товар доданий до кошика" });
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> RemoveFromCart(int id)
         {
@@ -40,6 +44,7 @@ namespace API.Controllers
             return Ok(new { Message = "Товар видалено з кошика" });
         }
 
+        [Authorize]
         [HttpDelete("clear/{userId}")]
         public async Task<IActionResult> ClearCart(int userId)
         {

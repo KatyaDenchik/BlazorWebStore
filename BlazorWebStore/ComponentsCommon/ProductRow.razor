@@ -1,0 +1,18 @@
+﻿@using Shared.Models
+@using System.Globalization
+
+<tr>
+    <td>@Product.Name</td>
+    <td>@Product.Description</td>
+    <td>@Product.Price.ToString("C", new CultureInfo("uk-UA"))</td>
+    <td>
+        <button class="btn-edit" @onclick="() => OnEdit.InvokeAsync(Product.Id)">Edit</button>
+        <button class="btn-delete" @onclick="() => OnDelete.InvokeAsync(Product.Id)">Delete</button>
+    </td>
+</tr>
+
+@code {
+    [Parameter] public ProductViewModel Product { get; set; }
+    [Parameter] public EventCallback<int> OnEdit { get; set; }
+    [Parameter] public EventCallback<int> OnDelete { get; set; }
+}

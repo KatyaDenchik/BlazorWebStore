@@ -1,1 +1,13 @@
 ﻿@page "/"
+@using ComponentsCommon
+@inject NavigationManager Navigation
+
+<div class="welcome-container">
+   <WelcomeHeader />
+    <AuthButtons OnLogin="NavigateToLogin" OnRegister="NavigateToRegister" />
+</div>
+
+@code {
+    private void NavigateToLogin() => Navigation.NavigateTo("/login");
+    private void NavigateToRegister() => Navigation.NavigateTo("/registration");
+}

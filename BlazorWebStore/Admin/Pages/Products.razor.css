@@ -1,0 +1,24 @@
+﻿.page-title {
+    text-align: center;
+    color: #4caf50;
+    margin-top: 20px;
+}
+
+.add-product-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.btn-add {
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    .btn-add:hover {
+        background-color: #43a047;
+    }

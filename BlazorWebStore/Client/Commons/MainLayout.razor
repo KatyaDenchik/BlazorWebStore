@@ -1,15 +1,15 @@
 ﻿@inherits LayoutComponentBase
-
+@attribute [Authorize]
 <PageTitle>Client</PageTitle>
 
 <div class="page">
-    <div class="sidebar">
+   @*  <div class="sidebar">
         <NavMenu />
-    </div>
+    </div> *@
 
     <main>
         <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+            <a href="cart" target="_blank" class="basket-button">Basket</a>
         </div>
 
         <article class="content px-4">

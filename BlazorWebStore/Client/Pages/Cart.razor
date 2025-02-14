@@ -1,0 +1,63 @@
+﻿@page "/cart"
+@using Client.Services
+@using ComponentsCommon
+@inject CartServices CartService
+@inject NavigationManager Navigation
+@inject IJSRuntime jsRuntime
+
+<h3 class="cart-title">Ваш кошик</h3>
+
+@if (cartItems.Count == 0)
+{
+    <p class="empty-cart">Кошик порожній</p>
+}
+else
+{
+   <CartTable CartItems="cartItems" OnQuantityChanged="UpdateQuantity" OnRemoveItem="RemoveFromCart" />
+    <CartSummary TotalPrice="totalPrice" />
+}
+
+@code {
+
+
+    private List<CartItemDTO> cartItems = new();
+    private decimal totalPrice;
+    private int userId;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var userIdstr = await jsRuntime.InvokeAsync<string>("localStorage.getItem", "userId");
+            userId = int.Parse(userIdstr);
+            await LoadCartItems();
+            StateHasChanged();
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    private async Task LoadCartItems()
+    {
+        cartItems = await CartService.GetCartItemsAsync(userId);
+        CalculateTotalPrice();
+    }
+
+    private void CalculateTotalPrice() =>
+        totalPrice = cartItems.Sum(item => item.Price * item.Quantity);
+
+    private async Task UpdateQuantity(CartItemDTO item)
+    {
+        if (item.Quantity < 1) item.Quantity = 1;
+        await CartService.AddToCartAsync(item);
+        CalculateTotalPrice();
+    }
+
+    private async Task RemoveFromCart(int itemId)
+    {
+        if (await CartService.RemoveFromCartAsync(itemId))
+        {
+            cartItems.RemoveAll(item => item.Id == itemId);
+            CalculateTotalPrice();
+        }
+    }
+}

@@ -1,0 +1,17 @@
+﻿.product-table {
+    width: 90%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background-color: #e8f5e9;
+}
+
+    .product-table th,
+    .product-table td {
+        border: 1px solid #c8e6c9;
+        padding: 10px;
+        text-align: center;
+    }
+
+    .product-table th {
+        background-color: #c8e6c9;
+    }

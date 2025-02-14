@@ -1,0 +1,10 @@
+﻿.cart-summary {
+    width: 90%;
+    margin: 0 auto 20px auto; 
+    text-align: right; 
+    padding: 10px;
+    background-color: #c8e6c9;
+    border-radius: 4px;
+    font-size: 1.2rem;
+    color: #2e7d32;
+}

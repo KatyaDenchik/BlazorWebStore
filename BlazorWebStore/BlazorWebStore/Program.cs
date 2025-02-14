@@ -8,7 +8,6 @@ using System.Text;
 using BusinessLogicLayer.Mappings;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Shared.Conventers;
 
 namespace BlazorWebStore
 {
@@ -27,17 +26,44 @@ namespace BlazorWebStore
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll",
-                    policy => policy.AllowAnyOrigin()
+                    policy => policy.WithOrigins("https://localhost:7202", "https://localhost:7011")
                                     .AllowAnyMethod()
-                                    .AllowAnyHeader());
+                                    .AllowAnyHeader()
+                                    .AllowCredentials());
             });
 
             var jwtSettings = builder.Configuration.GetSection("Jwt");
             var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
 
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = "SmartScheme";
+            })
+                .AddPolicyScheme("SmartScheme", "JWT or Cookie", options =>
                 {
+                    options.ForwardDefaultSelector = context =>
+                    {
+                        string authorization = context.Request.Headers["Authorization"];
+                        if (!string.IsNullOrEmpty(authorization) && authorization.StartsWith("Bearer", StringComparison.OrdinalIgnoreCase))
+                        {
+                            return JwtBearerDefaults.AuthenticationScheme;
+                        }
+
+                        return CookieAuthenticationDefaults.AuthenticationScheme;
+                    };
+                })
+                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+                {
+                    options.Cookie.Name = "myApiAuthCookie";
+                    options.Cookie.HttpOnly = true;
+                    options.Cookie.SameSite = SameSiteMode.None;
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                })
+                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+                {
+                    var jwtSettings = builder.Configuration.GetSection("Jwt");
+                    var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
+
                     options.RequireHttpsMetadata = false;
                     options.SaveToken = true;
                     options.TokenValidationParameters = new TokenValidationParameters

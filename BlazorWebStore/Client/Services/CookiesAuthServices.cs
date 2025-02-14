@@ -17,33 +17,15 @@ using System.Threading.Tasks;
 
 namespace Client.Services
 {
-    public class CookiesAuthServices(HttpClient httpClient, IHttpContextAccessor httpContextAccessor) : IAuthService
+    public class CookiesAuthServices(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, IJSRuntime jsRuntime) : IAuthService
     {
         public async Task<bool> LoginAsync(UserLoginDTO user)
         {
             var requestContent = JsonContent.Create(user);
             var response = await httpClient.PostAsync("api/auth/login", requestContent);
             if (!response.IsSuccessStatusCode) return false;
-            var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, user.Email),
-        };
-
-            var claimsIdentity = new ClaimsIdentity(
-                claims,
-                CookieAuthenticationDefaults.AuthenticationScheme
-            );
-
-            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-
-            await httpContextAccessor.HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                claimsPrincipal,
-                new AuthenticationProperties
-                {
-                    IsPersistent = true, 
-                });
-
+            var userDTO = await response.Content.ReadFromJsonAsync<UserDTO>();
+            await jsRuntime.InvokeVoidAsync("localStorage.setItem", "userId", userDTO.Id.ToString());
             return true;
     }
 

@@ -1,0 +1,52 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+@using Shared.Models
+@using System.Globalization
+
+<div class="product-form-container">
+    <EditForm Model="@ProductModel" OnValidSubmit="OnSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="form-group">
+            <label for="Name">Name:</label>
+            <InputText id="Name" @bind-Value="ProductModel.Name" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label for="Description">Description:</label>
+            <InputTextArea id="Description" @bind-Value="ProductModel.Description" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label for="Price">Price:</label>
+            <InputNumber id="Price" @bind-Value="ProductModel.Price" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label>Image:</label>
+            <InputFile id="hiddenFileInput" style="display:none;" OnChange="OnFileChange" />
+            <button type="button" class="btn-file" @onclick="OnTriggerFile">Select Image</button>
+
+            @if (ProductModel.ImageData != null)
+            {
+                <img src="@ConvertToBase64(ProductModel.ImageData)" alt="Image Preview" class="img-preview" />
+            }
+        </div>
+
+        <button type="submit" class="btn-submit">Add Product</button>
+    </EditForm>
+</div>
+
+@code {
+    [Parameter] public ProductViewModel ProductModel { get; set; }
+    [Parameter] public EventCallback OnSubmit { get; set; }
+    [Parameter] public EventCallback<InputFileChangeEventArgs> OnFileChange { get; set; }
+    [Parameter] public EventCallback OnTriggerFile { get; set; }
+
+    private string ConvertToBase64(byte[]? bytes)
+    {
+        if (bytes == null || bytes.Length == 0) return string.Empty;
+        var base64String = Convert.ToBase64String(bytes);
+        return $"data:image/png;base64,{base64String}";
+    }
+}

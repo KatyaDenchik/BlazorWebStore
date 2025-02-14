@@ -9,6 +9,7 @@ namespace DataAccessLayer.Repository.Interfaces
         Task<int> DeleteAsync(Expression<Func<T, bool>> specification);
         Task<int> DeleteByIdAsync(int id);
         Task<IEnumerable<T>> GetAsync();
+        Task<T> GetByIdAsync(int id);
         Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> predicate);
     }
 }

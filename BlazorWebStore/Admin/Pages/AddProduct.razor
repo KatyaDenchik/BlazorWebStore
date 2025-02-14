@@ -1,5 +1,6 @@
 ﻿@page "/add-edit-product/{id:int?}"
 
+@using ComponentsCommon
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.JSInterop
 @using Shared.Models
@@ -9,43 +10,17 @@
 @inject ProductService ProductService
 @inject IJSRuntime JSRuntime
 
-<EditForm Model="@productModel" OnValidSubmit="@HandleSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-
-    <div>
-        <label for="Name">Name:</label>
-        <InputText id="Name" @bind-Value="productModel.Name" />
+<div class="page-container">
+    <div class="sidebar">
+        <a class="btn-products" href="/products">Products</a>
     </div>
-
-    <div>
-        <label for="Description">Description:</label>
-        <InputTextArea id="Description" @bind-Value="productModel.Description" />
+    <div class="content">
+        <ProductForm ProductModel="productModel" 
+                     OnSubmit="HandleSubmit" 
+                     OnFileChange="HandleFileChange" 
+                     OnTriggerFile="TriggerFileDialog" />
     </div>
-
-    <div>
-        <label for="Price">Price:</label>
-        <InputNumber id="Price" @bind-Value="productModel.Price" />
-    </div>
-
-    <div>
-        <label>Image:</label>
-        <InputFile id="hiddenFileInput"
-                   style="display:none;"
-                   OnChange="@HandleFileChange" />
-
-        <button type="button" @onclick="TriggerFileDialog">Select Image</button>
-
-        @if (productModel.ImageData != null)
-        {
-            <img src="@ConvertToBase64(productModel.ImageData)"
-                 alt="Image Preview"
-                 style="max-width:150px;" />
-        }
-    </div>
-
-    <button type="submit">Add Product</button>
-</EditForm>
+</div>
 
 @code {
     [Parameter]

@@ -1,30 +1,17 @@
 ﻿@page "/products"
+@using ComponentsCommon
 @using Shared.Models
 @using Admin.Services
 @inject NavigationManager Navigation
 @inject ProductService ProductService
 
-<h3>Products</h3>
-<table>
-    <thead>
-        <tr><th>Name</th><th>Price</th><th>Actions</th></tr>
-    </thead>
-    <tbody>
-        @foreach (var product in products)
-        {
-            <tr>
-                <td>@product.Name</td>
-                <td>@product.Description</td>
-                <td>@product.Price</td>
-                <td>
-                    <button @onclick="() => EditProduct(product.Id)">Edit</button>
-                    <button @onclick="() => DeleteProduct(product.Id)">Delete</button>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-<button @onclick="AddProduct">Add New Product</button>
+<h3 class="page-title">Products</h3>
+
+<ProductList Products="products" OnEdit="EditProduct" OnDelete="DeleteProduct" />
+
+<div class="add-product-container">
+    <button class="btn-add" @onclick="AddProduct">Add New Product</button>
+</div>
 
 @code {
     private List<ProductViewModel> products = new();
@@ -50,11 +37,6 @@
         if (isDeleted)
         {
             products = await ProductService.GetAllProductAsync();
-        }
-        else
-        {
-            // Можно добавить логику обработки ошибки
-            // Например, показать сообщение пользователю
         }
     }
 }

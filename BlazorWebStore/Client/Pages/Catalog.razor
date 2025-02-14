@@ -1,2 +1,69 @@
 ﻿@page "/catalog"
+@using System.Security.Claims
+@using ComponentsCommon
+@using global::Shared.DTOs
+@using global::Shared.Models
+@using Client.Services
+
 @attribute [Authorize]
+@inject IJSRuntime jsRuntime
+@inject ProductServiceClient ProductService
+@inject CartServices CartService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<h2 class="catalog-title">Каталог товарів</h2>
+
+@if (products.Count == 0)
+{
+    <p>Немає доступних товарів.</p>
+}
+else
+{
+    <div class="product-grid">
+        @foreach (var product in products)
+        {
+            <ProductCard Product="product" OnAddToCart="AddToCart" />
+        }
+    </div>
+}
+
+@code {
+    private List<ProductViewModel> products = new();
+    private int userId;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var userIdstr = await jsRuntime.InvokeAsync<string>("localStorage.getItem", "userId");
+            userId = int.Parse(userIdstr);
+            products = await ProductService.GetAllProductAsync();
+            StateHasChanged();
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    private async Task AddToCart(ProductViewModel product)
+    {
+        if (userId == null)
+        {
+            await jsRuntime.InvokeVoidAsync("alert", "User is not authorized");
+            return;
+        }
+
+        var cartItem = new CartItemDTO
+            {
+                UserId = userId,
+                ProductId = product.Id,
+                ProductName = product.Name, 
+                Price = product.Price, 
+                Quantity = 1
+            };
+
+        var result = await CartService.AddToCartAsync(cartItem);
+        if (!result)
+        {
+            await jsRuntime.InvokeVoidAsync("alert", "Error adding product to cart");
+        }
+    }
+}

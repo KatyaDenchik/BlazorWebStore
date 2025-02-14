@@ -1,0 +1,23 @@
+﻿@using Shared.Models
+@code {
+    [Parameter] public List<ProductViewModel> Products { get; set; }
+    [Parameter] public EventCallback<int> OnEdit { get; set; }
+    [Parameter] public EventCallback<int> OnDelete { get; set; }
+}
+
+<table class="product-table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in Products)
+        {
+            <ProductRow Product="product" OnEdit="OnEdit" OnDelete="OnDelete" />
+        }
+    </tbody>
+</table>

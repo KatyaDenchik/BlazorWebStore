@@ -1,0 +1,9 @@
+﻿<button class="custom-button" type="@Type" @onclick="OnClick">
+    @ChildContent
+</button>
+
+@code {
+    [Parameter] public string Type { get; set; } = "button";
+    [Parameter] public EventCallback OnClick { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; }
+}

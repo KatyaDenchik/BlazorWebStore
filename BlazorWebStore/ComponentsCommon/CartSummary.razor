@@ -1,0 +1,8 @@
+﻿@using System.Globalization
+<div class="cart-summary">
+    <strong>Загальна сума:</strong> @TotalPrice.ToString("C", new CultureInfo("uk-UA"))
+</div>
+
+@code {
+    [Parameter] public decimal TotalPrice { get; set; }
+}

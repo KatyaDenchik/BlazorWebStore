@@ -23,13 +23,15 @@ namespace Client
                 .AddCookie(options =>
                 {
                     options.LoginPath = "/login";
-
                     options.Cookie.Name = "myAppAuthCookie";
                     options.Cookie.HttpOnly = true;
                 });
 
-            builder.Services.AddScoped<IAuthService, CookiesAuthServices>();
+            builder.Services.AddScoped<IAuthService, CookiesAuthServices>(); 
             builder.Services.AddScoped<CookiesAuthServices>();
+            builder.Services.AddScoped<ProductServiceClient>();
+            builder.Services.AddScoped<CartServices>();
+
             builder.Services.AddScoped(sp =>
             {
                 return new HttpClient

@@ -1,0 +1,25 @@
+﻿@using Shared.DTOs
+
+<table class="cart-table">
+    <thead>
+        <tr>
+            <th>Товар</th>
+            <th>Ціна</th>
+            <th>Кількість</th>
+            <th>Сума</th>
+            <th>Дії</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in CartItems)
+        {
+            <CartItemRow Item="item" OnQuantityChanged="OnQuantityChanged" OnRemoveItem="OnRemoveItem" />
+        }
+    </tbody>
+</table>
+
+@code {
+    [Parameter] public List<CartItemDTO> CartItems { get; set; }
+    [Parameter] public EventCallback<CartItemDTO> OnQuantityChanged { get; set; }
+    [Parameter] public EventCallback<int> OnRemoveItem { get; set; }
+}

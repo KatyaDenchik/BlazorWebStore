@@ -1,0 +1,11 @@
+﻿@using Microsoft.AspNetCore.Components
+
+<div class="auth-buttons">
+    <button class="btn-login" @onclick="OnLogin">Увійти</button>
+    <button class="btn-register" @onclick="OnRegister">Реєстрація</button>
+</div>
+
+@code {
+    [Parameter] public EventCallback OnLogin { get; set; }
+    [Parameter] public EventCallback OnRegister { get; set; }
+}

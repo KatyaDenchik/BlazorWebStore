@@ -1,0 +1,36 @@
+﻿@using global::Shared.Models
+@using global::Shared.DTOs
+@using System.Globalization
+
+<div class="product-card">
+    <div class="product-image">
+        @if (Product.ImageData != null)
+        {
+            var base64Image = Convert.ToBase64String(Product.ImageData);
+            <img src="data:image/jpeg;base64,@base64Image" alt="@Product.Name" />
+        }
+        else
+        {
+            <img src="placeholder.jpg" alt="No Image" />
+        }
+    </div>
+    <div class="product-details">
+        <h3>@Product.Name</h3>
+        <p>@Product.Description</p>
+        <p class="product-price">@Product.Price.ToString("C", new CultureInfo("uk-UA"))</p>
+        <button class="btn-add" @onclick="HandleAddToCart">Додати у кошик</button>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public ProductViewModel Product { get; set; }
+
+    [Parameter]
+    public EventCallback<ProductViewModel> OnAddToCart { get; set; }
+
+    private async Task HandleAddToCart()
+    {
+        await OnAddToCart.InvokeAsync(Product);
+    }
+}

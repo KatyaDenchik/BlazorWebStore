@@ -30,7 +30,7 @@ namespace BusinessLogicLayer.Services
 
         public async Task<ProductDTO> GetProductByIdAsync(int id)
         {
-            var product = (await productRepository.GetAsync(p => p.Id == id)).FirstOrDefault();
+            var product = (await productRepository.GetByIdAsync(id));
             return mapper.Map<ProductDTO>(product);
         }
 

@@ -1,0 +1,32 @@
+﻿.auth-buttons {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+    .auth-buttons button {
+        padding: 10px 20px;
+        font-size: 1rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+.btn-login {
+    background-color: #4caf50;
+    color: #fff;
+}
+
+    .btn-login:hover {
+        background-color: #43a047;
+    }
+
+.btn-register {
+    background-color: #81c784;
+    color: #fff;
+}
+
+    .btn-register:hover {
+        background-color: #66bb6a;
+    }

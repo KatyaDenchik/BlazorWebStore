@@ -1,4 +1,6 @@
 ﻿using BusinessLogicLayer.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.DTOs;
 using System;
@@ -20,12 +22,14 @@ namespace API.Controllers
             this.userService = userService;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IEnumerable<UserDTO>> GetAll()
         {
             return await userService.GetAllUsersAsync();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -40,6 +44,7 @@ namespace API.Controllers
             return Ok(new { Message = "Користувач зареєстрований" });
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

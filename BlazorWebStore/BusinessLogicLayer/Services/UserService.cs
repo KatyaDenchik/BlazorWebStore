@@ -31,7 +31,7 @@ namespace BusinessLogicLayer.Services
 
         public async Task<UserDTO> GetUserByIdAsync(int id)
         {
-            var user = (await userRepository.GetAsync(u => u.Id == id)).FirstOrDefault();
+            var user = await userRepository.GetByIdAsync(id);
             return mapper.Map<UserDTO>(user);
         }
 
@@ -61,6 +61,7 @@ namespace BusinessLogicLayer.Services
 
             return new UserDTO
             {
+                Id = user.Id,
                 Email = user.Email,
                 Role = user.Role
             };
